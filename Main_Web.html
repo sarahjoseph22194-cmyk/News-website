@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Latest News</title>
+  <style>
+     body {
+       margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;           /* Sidebar + Content side by side */
+      min-height: 100vh;
+    }
+
+    /* Sidebar styles */
+    .sidebar {
+      width: 220px;
+      background-color: #f4f4f4;
+      padding: 20px;
+      border-right: 1px solid #ddd;
+    }
+
+    .sidebar h2 {
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar li {
+      margin: 12px 0;
+    }
+
+    .sidebar a {
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    .sidebar a:hover {
+      color: #007bff;
+    }
+
+    /* Content area */
+    .content {
+      flex: 1;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    h1 {
+  text-align: center;
+}
+    #news {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px; /* space between cards */
+  }
+    .news-card {
+    background-color: AliceBlue;
+    border: 2px SlateBlue;
+    padding: 15px;
+    margin: 20px;
+    height : 450px;
+    flex-direction: column;
+    border-radius: 10px;
+    display: flex;
+    overflow: hidden;
+    justify-content: space-between;
+
+}
+    .news-card img {
+      width: 150%;          /* fill width of card */
+      height: 180px;        /* take up ~40% of card height */
+      object-fit: cover;    /* crop to fit nicely */
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .news-card .date {
+      font-size: 0.9em;
+      color: #333;
+      margin-top: 10px;
+      font-style: italic;
+    }
+    .news-card a {
+      font-weight: bold;
+      color: Black;
+      text-decoration: none;
+    }
+
+    .news-card a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+   <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Topics</h2>
+    <ul>
+      <li><a href="#">All</a></li>
+      <li><a href="#">Business</a></li>
+      <li><a href="#">Technology</a></li>
+      <li><a href="#">Sports</a></li>
+      <li><a href="#">Health</a></li>
+      <li><a href="#">Entertainment</a></li>
+      <li><a href="#">Science</a></li>
+    </ul>
+  </div>
+
+  <!-- Main content -->
+  <div class="content">
+    <h1>Latest News</h1>
+    <div id="news"></div>
+  </div>
+
+  <script>
+  const apiKey = "e2e0f0c37d474ac2b610466243a8e244";
+  const container = document.getElementById("news");
+
+  // Function to fetch and display news
+  function fetchNews(category = "general") {
+    container.innerHTML = "<p>Loading...</p>"; // show loading while fetching
+
+  fetch(`https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${apiKey}`)
+      .then(response => response.json())
+      .then(data => {
+        container.innerHTML = ""; // clear loading message
+
+        if (!data.articles || data.articles.length === 0) {
+          container.innerHTML = "<p>No news found for this category.</p>";
+          return;
+        }
+
+        data.articles.forEach(article => {
+          let wrapper = document.createElement("div");
+          wrapper.classList.add("news-card");
+
+          if (article.urlToImage) {
+            let img = document.createElement("img");
+            img.src = article.urlToImage;
+            wrapper.appendChild(img);
+          }
+
+          let title = document.createElement("a");
+          title.href = article.url;
+          title.textContent = article.title;
+          title.target = "_blank";
+
+          let desc = document.createElement("p");
+          desc.textContent = article.description || "No description available.";
+
+          let date = document.createElement("p");
+          date.classList.add("date");
+          if (article.publishedAt) {
+            let publishedDate = new Date(article.publishedAt);
+            date.textContent = "Published: " + publishedDate.toLocaleString();
+          }
+
+          wrapper.appendChild(title);
+          wrapper.appendChild(desc);
+          wrapper.appendChild(date);
+
+          container.appendChild(wrapper);
+        });
+      })
+      .catch(error => {
+        console.error("Error fetching news:", error);
+        container.innerHTML = "<p>Failed to load news.</p>";
+      });
+  }
+
+  // Load default category (general) when page loads
+  fetchNews();
+
+  // Add click listeners to sidebar links
+  document.querySelectorAll(".sidebar a").forEach(link => {
+    link.addEventListener("click", event => {
+      event.preventDefault(); // stop page refresh
+      const category = event.target.getAttribute("data-category");
+      fetchNews(category);
+    });
+  });
+</script>
+
+</body>
+</html>
