@@ -9,7 +9,6 @@ from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lex_rank import LexRankSummarizer  # Or any other summarizer
 nltk.download('punkt')
 nltk.download('punkt_tab')
-URL= "https://newsapi.org/v2/top-headlines?country=us&apiKey=e2e0f0c37d474ac2b610466243a8e244"
 
 response = requests.get(URL)
 new_data = response.json()
@@ -54,4 +53,5 @@ def summarize_articles(article):
 summarized_data = summarize_articles(new_data)
 with open("news.json", "w", encoding="utf-8") as f:
     json.dump(summarized_data, f, indent=4)
+
 
