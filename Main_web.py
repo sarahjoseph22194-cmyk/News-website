@@ -14,7 +14,7 @@ load_dotenv()
 NEWS_API_KEY = os.getenv("NEWS_API_KEY")
 if not NEWS_API_KEY:
     raise ValueError("❌ No API key found. Set NEWS_API_KEY environment variable.")
-
+# fix the key
 URL = f"https://newsapi.org/v2/top-headlines?country=us&apiKey={NEWS_API_KEY}"
 response = requests.get(URL)
 new_data = response.json()
