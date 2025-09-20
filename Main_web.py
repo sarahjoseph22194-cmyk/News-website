@@ -60,3 +60,4 @@ summarized_data = summarize_articles(new_data)
 with open("news.json", "w", encoding="utf-8") as f:
     json.dump(summarized_data, f, indent=4)
 
+#just a comment
