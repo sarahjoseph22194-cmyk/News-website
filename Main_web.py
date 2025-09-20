@@ -3,13 +3,19 @@ import json
 import os
 import nltk
 import re
+from dotenv import load_dotenv
 from bs4 import BeautifulSoup
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lex_rank import LexRankSummarizer  # Or any other summarizer
 nltk.download('punkt')
 nltk.download('punkt_tab')
+load_dotenv()
+NEWS_API_KEY = os.getenv("NEWS_API_KEY")
+if not NEWS_API_KEY:
+    raise ValueError("❌ No API key found. Set NEWS_API_KEY environment variable.")
 
+URL = f"https://newsapi.org/v2/top-headlines?country=us&apiKey={NEWS_API_KEY}"
 response = requests.get(URL)
 new_data = response.json()
 with open("news.json", "w", encoding="utf-8") as f:
@@ -53,5 +59,4 @@ def summarize_articles(article):
 summarized_data = summarize_articles(new_data)
 with open("news.json", "w", encoding="utf-8") as f:
     json.dump(summarized_data, f, indent=4)
-
 
